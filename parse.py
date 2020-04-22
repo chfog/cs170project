@@ -99,7 +99,10 @@ def read_output_file(path, G):
             w["weight"] = edge_in_G["weight"]
         T.add_nodes_from(nodes)
 
-        assert utils.is_valid_network(G, T)
+        try:
+            assert utils.is_valid_network(G, T)
+        except:
+            raise ValueError(f"{path} is not a valid network in G.")
 
         return T
 
