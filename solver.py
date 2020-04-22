@@ -17,6 +17,8 @@ def solve(G, T=None, cost=float('inf')):
     """
     tries, max_tries = 0, 4*len(list(G.nodes))
     while tries < max_tries:
+        if cost == 0:
+            break
         nodes = list(G.nodes)
         random.shuffle(nodes)
         i = 0
@@ -51,7 +53,11 @@ def solve_file(files):
     infile, outfile = files
     G, T, cost = parse.read_input_file(infile), None, float('inf')
     if os.path.exists(outfile):
-        T = parse.read_output_file(outfile, G)
+        try:
+            T = parse.read_output_file(outfile, G)
+        except:
+            print(f"{outfile} could not be read.")
+            return None
         cost = utils.average_pairwise_distance_fast(T)
     new_T, new_cost = solve(G, T, cost)
     if new_cost < cost:
