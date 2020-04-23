@@ -5,7 +5,7 @@ import random
 import os
 from help_horizon import lock
 
-def solve(G, T=None, cost=float('inf')):
+def solve(G, T=None, cost=float('inf'), multiplier=2):
     """
     Args:
         G: networkx.Graph
@@ -15,7 +15,7 @@ def solve(G, T=None, cost=float('inf')):
     Returns:
         T: networkx.Graph
     """
-    tries, max_tries = 0, 4*len(list(G.nodes))
+    tries, max_tries = 0, multiplier*len(list(G.nodes))
     while tries < max_tries:
         if cost == 0:
             break
@@ -48,6 +48,36 @@ def gen_candidates(G, nodes, length=10):
             for i in range(len(p) - 1):
                 T.add_edge(p[i], p[i + 1], weight=G[p[i]][p[i + 1]]['weight'])
         yield T
+
+
+def pick_leaves(G, T, cost):
+    '''Given a tree T and a graph G, recursively picks off leaves to find the minimum possible
+    routing cost subtree of T
+
+    Returns the best T and its cost.
+    '''
+    def pick_leaves_helper(G, T, edges, i):
+        if not utils.is_valid_network(G, T):
+            return float("inf"), []
+        leafset = set(leaf for leaf, neighbor in edges)
+        new_leaf_edges = [(n, list(T[n])[0]) for n in T.nodes if n not in leafset and len(T[n]) == 1]
+        edges = edges + new_leaf_edges
+        cost, nodes_to_remove = utils.average_pairwise_distance_fast(T), []
+        for k in range(i, len(edges)):
+            leaf, neighbor = edges[k]
+            w = T[leaf][neighbor]['weight']
+            T.remove_node(leaf)
+            new_cost, additional_nodes = pick_leaves_helper(G, T, edges, k + 1)
+            if new_cost < cost:
+                cost, nodes_to_remove = new_cost, [leaf] + additional_nodes
+            T.add_edge(leaf, neighbor, weight=w)
+        return cost, nodes_to_remove
+    new_cost, nodes_to_remove = pick_leaves_helper(G, T, [], 0)
+    if new_cost < cost:
+        return T.subgraph(T.nodes - set(nodes_to_remove)), new_cost
+    else:
+        return T, cost
+
 
 def solve_file(files):
     infile, outfile = files
