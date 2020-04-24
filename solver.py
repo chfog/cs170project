@@ -5,7 +5,7 @@ import random
 import os
 from help_horizon import lock
 
-def solve(G, T=None, cost=float('inf'), multiplier=6):
+def solve(G, T=None, cost=float('inf'), multiplier=2):
     """
     Args:
         G: networkx.Graph
@@ -40,8 +40,8 @@ def gen_candidates(G, nodes):
 
        Currently gives shortest-path trees from every vertex after campos(G).
     '''
-    yield campos(G)
     subG = G.subgraph(nodes)
+    yield campos(subG)
     for node in nodes:
         _, paths = nx.algorithms.shortest_paths.weighted.single_source_dijkstra(subG, node)
         T = nx.Graph()
