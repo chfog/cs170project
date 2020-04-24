@@ -5,7 +5,7 @@ import random
 import os
 from help_horizon import lock
 
-def solve(G, T=None, cost=float('inf'), multiplier=2):
+def solve(G, T=None, cost=float('inf'), multiplier=6):
     """
     Args:
         G: networkx.Graph
