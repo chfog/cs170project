@@ -152,9 +152,15 @@ def solve_file(files):
         cost = utils.average_pairwise_distance_fast(T)
     new_T, new_cost = solve(G, T, cost)
     if new_cost < cost:
+        parse.write_output_file(new_T, outfile)
         if lock is not None:
             lock.acquire()
-        parse.write_output_file(new_T, outfile)
         print(f"New minimum found for {infile}, with cost {new_cost}.")
+        if lock is not None:
+            lock.release()
+    else:
+        if lock is not None:
+            lock.acquire()
+        print(f"No new minimum found for {infile}.")
         if lock is not None:
             lock.release()
