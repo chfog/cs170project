@@ -9,11 +9,11 @@ parser.add_argument("--low", nargs='?', type=int, default=-1)
 parser.add_argument("--high", nargs='?', type=int, default=-1)
 args = parser.parse_args()
 
-lock = None
+LOCK = None
 
 def make_lock(l):
-    global lock
-    lock = l
+    global LOCK
+    LOCK = l
 
 
 if __name__ == "__main__":
@@ -22,7 +22,7 @@ if __name__ == "__main__":
         solver.solve_file((args.infile, args.outfile))
     elif os.path.isdir(args.infile):
         assert os.path.isdir(args.outfile), "Outfile must be a directory if infile is a directory."
-        files = sorted([f[:-3] for f in os.listdir(args.infile) if f.endswith(".in")])#, reverse=True)
+        files = sorted([f[:-3] for f in os.listdir(args.infile) if f.endswith(".in")], reverse=True)
         low = 0 if args.low < 0 or args.low > len(files) else args.low
         high = len(files) if args.high < low or args.high > len(files) else args.high
         files = files[low:high]
@@ -31,5 +31,5 @@ if __name__ == "__main__":
                 mapped = pool.map_async(solver.solve_file, 
                         [(os.path.join(args.infile, f + ".in"), os.path.join(args.outfile, f + ".out")) for f in files]
                         )
-                mapped.get()
+                print(list(mapped.get()))
 #        print(list(map(solver.solve_file, [(os.path.join(args.infile, f + ".in"), os.path.join(args.outfile, f + ".out")) for f in files])))

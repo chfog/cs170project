@@ -3,9 +3,9 @@ import parse
 import utils
 import random
 import os
-from help_horizon import lock
+from help_horizon import LOCK
 
-def solve(G, T=None, cost=float('inf'), multiplier=2):
+def solve(G, T=None, cost=float('inf'), multiplier=0.5):
     """
     Args:
         G: networkx.Graph
@@ -15,7 +15,7 @@ def solve(G, T=None, cost=float('inf'), multiplier=2):
     Returns:
         T: networkx.Graph
     """
-    tries, max_tries = 0, multiplier*len(list(G.nodes))
+    tries, max_tries = 0, int(multiplier*len(list(G.nodes)))
     while tries < max_tries:
         if cost == 0:
             break
@@ -153,14 +153,14 @@ def solve_file(files):
     new_T, new_cost = solve(G, T, cost)
     if new_cost < cost:
         parse.write_output_file(new_T, outfile)
-        if lock is not None:
-            lock.acquire()
+        if LOCK is not None:
+            LOCK.acquire()
         print(f"New minimum found for {infile}, with cost {new_cost}.")
-        if lock is not None:
-            lock.release()
+        if LOCK is not None:
+            LOCK.release()
     else:
-        if lock is not None:
-            lock.acquire()
+        if LOCK is not None:
+            LOCK.acquire()
         print(f"No new minimum found for {infile}.")
-        if lock is not None:
-            lock.release()
+        if LOCK is not None:
+            LOCK.release()
