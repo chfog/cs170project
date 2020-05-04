@@ -5,7 +5,7 @@ import random
 import os
 from help_horizon import LOCK
 
-def solve(G, T=None, cost=float('inf'), multiplier=0.5):
+def solve(G, T=None, cost=float('inf'), multiplier=1):
     """
     Args:
         G: networkx.Graph
@@ -42,14 +42,14 @@ def gen_candidates(G, nodes):
     '''
     subG = G.subgraph(nodes)
     yield campos(subG)
-    for node in nodes:
-        _, paths = nx.algorithms.shortest_paths.weighted.single_source_dijkstra(subG, node)
-        T = nx.Graph()
-        T.add_nodes_from(nodes)
-        for p in paths.values():
-            for i in range(len(p) - 1):
-                T.add_edge(p[i], p[i + 1], weight=G[p[i]][p[i + 1]]['weight'])
-        yield T
+#    for node in nodes:
+#        _, paths = nx.algorithms.shortest_paths.weighted.single_source_dijkstra(subG, node)
+#        T = nx.Graph()
+#        T.add_nodes_from(nodes)
+#        for p in paths.values():
+#            for i in range(len(p) - 1):
+#                T.add_edge(p[i], p[i + 1], weight=G[p[i]][p[i + 1]]['weight'])
+#        yield T
 
 
 def pick_leaves(G, T, cost):
