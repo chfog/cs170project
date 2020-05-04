@@ -19,3 +19,25 @@ When writing inputs/outputs:
 - Make sure you use the functions `write_input_file` and `write_output_file` provided
 - Run the functions `read_input_file` and `read_output_file` to validate your files before submitting!
   - These are the functions run by the autograder to validate submissions
+
+## To run the program:
+
+There are three main ways of running the code. If you have a single file that you want to run it on, use
+
+```
+python3 help_horizon.py <input>.in <output>.out
+```
+
+If you have more than one input file, you can run it on all of them with
+
+```
+python3 help_horizon.py <inputs> <outputs>
+```
+
+for existing directories `<inputs>` and `<outputs>`. Finally, if you want to run it on just a portion of the inputs in the directory, use
+
+```
+python3 help_horizon.py <inputs> <outputs> --low lo --high hi
+```
+
+where `lo` and `hi` are integral upper and lower limits. For example, if `lo == 10` and `hi == 20`, this will run the 10th through 19th, inclusive, files in `<inputs>`. Numbers outside the possible range will default to the entire directory.
